@@ -15,7 +15,7 @@ With a little help from [tu-dresden.de](https://tu-dresden.de/) I created a scri
 - jQuery 2.0+
 
 ### The HTML you need
-change “en” (3×) for any language code you like, add it to a page multiple times in different languages if you wish
+Change *en* (3×) for any language code you like, but take care of adding this language to the matomoTrackingOptOut.js (*en* and *de* are added by default). You can add this HTML to one single page multiple times in different languages if you wish.
 ```html
 <p class="matomo-optout" lang="en">
     <span class="js" style="display:none;">
@@ -48,3 +48,4 @@ if (localStorage.getItem('matomoTrackingEnabled') !== 'false') {
     })();
 }
 ```
+Last but not least, reference the **matomoTrackingOptOut.js** or **matomoTrackingOptOut.min.js** in your HTML page.
