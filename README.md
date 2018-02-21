@@ -11,6 +11,9 @@ With a little help from [tu-dresden.de](https://tu-dresden.de/) I created a scri
 - check for browser’s *Do Not Track* setting
 - support for multiple languages in one page
 
+### Dependencies
+- jQuery 2.0+
+
 ### The HTML you need
 change “en” (3×) for any language code you like, add it to a page multiple times in different languages if you wish
 ```html
