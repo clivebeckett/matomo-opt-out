@@ -26,7 +26,7 @@ Change *en* (3×) for any language code you like, but take care of adding this l
 </p>
 ```
 ### Additional JavaScript
-This should be called on every page on the website (e.g. in a script that gets loaded on every page) and enables Matomo Tracking at its first call. Call it …
+This enables Matomo tracking at its first call and should be called on every page on the website (e.g. in a script that gets loaded on every page). Take care to call it …
 - … before the actual opt-out script
 - … before the Matomo/Piwik integration
 
@@ -48,4 +48,4 @@ if (localStorage.getItem('matomoTrackingEnabled') !== 'false') {
     })();
 }
 ```
-Last but not least, reference the **matomoTrackingOptOut.js** or **matomoTrackingOptOut.min.js** in your HTML page.
+Last but not least, reference the **matomoTrackingOptOut.js** or **matomoTrackingOptOut.min.js** in your Privacy Policy page or wherever you added the Opt-Out-HTML.
