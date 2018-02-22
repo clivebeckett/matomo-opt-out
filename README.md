@@ -1,11 +1,11 @@
 # Matomo Opt-Out JavaScript without iframe and without cookies
 
-With a little help from [tu-dresden.de](https://tu-dresden.de/) I created a script that lets users opt-out of [Matomo](https://matomo.org/) *(formerly Piwik)* data collection without the need for cookies or the default iframe provided by Matomo.
+Inspired by one line of code in the HTML of [tu-dresden.de](https://tu-dresden.de/) I created a script that lets users opt-out of [Matomo](https://matomo.org/) *(formerly Piwik)* data collection – without the need for cookies or the default iframe provided by Matomo.
 
 ### Features
 
 - no iframe
-- no cookies
+- no cookies (using HTML5 Web Storage instead)
 - fallback message for disabled JavaScript
 - fallback message for old browsers that don’t support HTML5 Web Storage
 - check for browser’s *Do Not Track* setting
@@ -22,7 +22,7 @@ Change *en* (3×) for any language code you like, but take care of adding this l
         <input type="checkbox" name="matomo-optout" id="matomo-optout-en" checked>
         <label for="matomo-optout-en"></label>
     </span>
-    <span class="nojs">Your browser appears to be too old to support this feature. For more privacy control please update your browser.</span>
+    <span class="nojs">It appears you have deactived JavaScript in your browser. This feature is only available with JavaScript turned on. If you don’t want your data to be collected, you can still turn on <em>Do Not Track</em> in your browser which is a general setting and is being respected by our Matomo installation.</span>
 </p>
 ```
 ### Additional JavaScript
