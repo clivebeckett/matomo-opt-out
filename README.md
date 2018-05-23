@@ -14,7 +14,8 @@ Inspired by one line of code in the HTML of [tu-dresden.de](https://tu-dresden.d
 ### Dependencies
 - jQuery 2.0+
 
-### The HTML you need
+### The HTML for the actual opt-out checkbox
+Add this to the page(s) where you want your visitors to find the opt-out checkbox – probably within the privacy statement.
 Change *en* (3×) for any language code you like, but take care of adding this language to the matomoTrackingOptOut.js (*en* and *de* are added by default). You can add this HTML to one single page multiple times in different languages if you wish.
 ```html
 <p class="matomo-optout" lang="en">
@@ -48,4 +49,4 @@ if (localStorage.getItem('matomoTrackingEnabled') !== 'false') {
     })();
 }
 ```
-Last but not least, reference the **matomoTrackingOptOut.js** or **matomoTrackingOptOut.min.js** in your Privacy Policy page or wherever you added the Opt-Out-HTML.
+Last but not least, reference the **matomoTrackingOptOut.js** or **matomoTrackingOptOut.min.js** in your Privacy Policy page or wherever you added the above-mentioned opt-out-HTML.
