@@ -86,7 +86,7 @@ function matomoDisplayStatus() {
             : TRACKING_VALUE === 'false'
             ? false
             : null;
-    let textKey = CHECKED ? 'trackingActive' : 'trackingInActive';
+    const TEXT_KEY = CHECKED ? 'trackingActive' : 'trackingInActive';
 
     if (CHECKED !== null) {
         CHECKBOXES.forEach((checkbox) => {
@@ -96,7 +96,7 @@ function matomoDisplayStatus() {
             const ELEMENTS = nodeArray(
                 `${BASE_SELECTOR} label[for="matomo-optout-${language}"]`
             );
-            setHtml(ELEMENTS, language, textKey);
+            setHtml(ELEMENTS, language, TEXT_KEY);
         }
     }
 }
