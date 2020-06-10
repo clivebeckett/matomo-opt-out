@@ -76,16 +76,9 @@ function matomoDisplayStatus() {
         element.style.display = 'none';
     });
     const TRACKING_VALUE = localStorage.getItem('matomoTrackingEnabled');
-    const CHECKBOXES = nodeArray(
-        BASE_SELECTOR + ' input[name="matomo-optout"]'
-    );
+    const CHECKBOXES = nodeArray(BASE_SELECTOR + ' input[name="matomo-optout"]');
 
-    const CHECKED =
-        TRACKING_VALUE === 'true'
-            ? true
-            : TRACKING_VALUE === 'false'
-            ? false
-            : null;
+    const CHECKED = TRACKING_VALUE === 'true' ? true : TRACKING_VALUE === 'false' ? false : null;
     const TEXT_KEY = CHECKED ? 'trackingActive' : 'trackingInActive';
 
     if (CHECKED !== null) {
@@ -93,9 +86,7 @@ function matomoDisplayStatus() {
             checkbox.checked = CHECKED;
         });
         for (let language in LANG_SNIPPETS) {
-            const ELEMENTS = nodeArray(
-                `${BASE_SELECTOR} label[for="matomo-optout-${language}"]`
-            );
+            const ELEMENTS = nodeArray(`${BASE_SELECTOR} label[for="matomo-optout-${language}"]`);
             setHtml(ELEMENTS, language, TEXT_KEY);
         }
     }
@@ -108,9 +99,7 @@ function matomoDisplayStatus() {
 function matomoChangeStatus() {
     if (typeof Storage !== 'undefined') {
         localStorage.matomoTrackingEnabled =
-            localStorage.getItem('matomoTrackingEnabled') === 'true'
-                ? 'false'
-                : 'true';
+            localStorage.getItem('matomoTrackingEnabled') === 'true' ? 'false' : 'true';
         matomoDisplayStatus();
     }
 }
