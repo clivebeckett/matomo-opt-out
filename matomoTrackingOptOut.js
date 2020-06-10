@@ -9,90 +9,144 @@
 
 /**
  * set whether you have your Matomo installation respect the browser’s DoNotTrack option
- * @var doNotTrackRespected boolean
+ * @var DO_NOT_TRACK_RESPECTED boolean
  */
-var doNotTrackRespected = true;
+const DO_NOT_TRACK_RESPECTED = true;
+
+/**
+ * The basis selector of the matomo output
+ * @var BASE_SELECTOR string
+ */
+const BASE_SELECTOR = '.matomo-optout';
 
 /**
  * language snippets
  * just duplicate one of the language blocks to add other languages
- * @object langSnippets
+ * @object LANG_SNIPPETS
  */
-var langSnippets = {
-	"en": {
-		"trackingActive": "Currently your visit to this website <strong>is being anonymously tracked</strong> by the Matomo Web Analytics Tool. Uncheck this box to stop being tracked.",
-		"trackingInActive": "Currently your visit to this website <strong>is not being tracked</strong> by the Matomo Web Analytics Tool. Check this box to activate anonymous tracking and help us improve our website.",
-		"doNotTrackActive": "You have activated the <em>Do Not Track</em> option in your browser settings. This setting is being respected by the Matomo Web Analytics Tool on our website. There’s no need for you to opt-out of this website’s data tracking.",
-		"localStorageNotAvailable": "Your browser appears to be too old to support this feature. For more privacy control please update your browser."
-	},
-	"de": {
-		"trackingActive": "Ihr Besuch auf dieser Website wird derzeit durch das Matomo-Webanalyse-Tool <strong>anonym erfasst</strong>. Klicken Sie hier um die Datenerfassung zu beenden.",
-		"trackingInActive": "Ihr Besuch auf dieser Website wird derzeit <strong>nicht</strong> durch das Matomo-Webanalyse-Tool <strong>erfasst</strong>. Klicken Sie hier um anonyme Datenerfassung zu aktivieren und uns dabei zu helfen, unsere Website zu verbessern.",
-		"doNotTrackActive": "Sie haben die <em>Do-Not-Track</em>-Option in Ihren Browser-Einstellungen aktiviert. Diese Einstellung wird von unserem Matomo-Webanalyse-Tool respektiert. Es ist daher nicht notwendig, die Datenerhebung für diese Website zu deaktivieren.",
-		"localStorageNotAvailable": "Ihr Browser scheint zu alt zu sein, um diese Einstellung zu unterstützen. Bitte bringen Sie Ihren Browser auf den neuesten Stand für mehr Kontrolle über Ihre Daten."
-	}
+const LANG_SNIPPETS = {
+    en: {
+        trackingActive:
+            'Currently your visit to this website <strong>is being anonymously tracked</strong> by the Matomo Web Analytics Tool. Uncheck this box to stop being tracked.',
+        trackingInActive:
+            'Currently your visit to this website <strong>is not being tracked</strong> by the Matomo Web Analytics Tool. Check this box to activate anonymous tracking and help us improve our website.',
+        doNotTrackActive:
+            'You have activated the <em>Do Not Track</em> option in your browser settings. This setting is being respected by the Matomo Web Analytics Tool on our website. There’s no need for you to opt-out of this website’s data tracking.',
+        localStorageNotAvailable:
+            'Your browser appears to be too old to support this feature. For more privacy control please update your browser.',
+    },
+    de: {
+        trackingActive:
+            'Ihr Besuch auf dieser Website wird derzeit durch das Matomo-Webanalyse-Tool <strong>anonym erfasst</strong>. Klicken Sie hier um die Datenerfassung zu beenden.',
+        trackingInActive:
+            'Ihr Besuch auf dieser Website wird derzeit <strong>nicht</strong> durch das Matomo-Webanalyse-Tool <strong>erfasst</strong>. Klicken Sie hier um anonyme Datenerfassung zu aktivieren und uns dabei zu helfen, unsere Website zu verbessern.',
+        doNotTrackActive:
+            'Sie haben die <em>Do-Not-Track</em>-Option in Ihren Browser-Einstellungen aktiviert. Diese Einstellung wird von unserem Matomo-Webanalyse-Tool respektiert. Es ist daher nicht notwendig, die Datenerhebung für diese Website zu deaktivieren.',
+        localStorageNotAvailable:
+            'Ihr Browser scheint zu alt zu sein, um diese Einstellung zu unterstützen. Bitte bringen Sie Ihren Browser auf den neuesten Stand für mehr Kontrolle über Ihre Daten.',
+    },
 };
+
+/**
+ * Return an array from nodes
+ * @param selector
+ * @param context
+ */
+function nodeArray(selector, context) {
+    if (!context) {
+        context = document;
+    }
+    return [].slice.call(context.querySelectorAll(selector));
+}
+
+function setHtml(elements, language, key) {
+    elements.forEach((element) => {
+        element.innerHTML = LANG_SNIPPETS[language][key];
+    });
+}
 
 /**
  * display the current status of the tracking (enabled or not)
  */
-function matomoDisplayStatus()
-{
-	$('.matomo-optout').each(function() {
-		$(this).find('.js').css('display', 'inline');
-		$(this).find('.nojs').css('display', 'none');
+function matomoDisplayStatus() {
+    nodeArray(BASE_SELECTOR + ' .js').forEach((element) => {
+        element.style.display = 'inline';
+    });
+    nodeArray(BASE_SELECTOR + ' .nojs').forEach((element) => {
+        element.style.display = 'none';
+    });
+    const TRACKING_VALUE = localStorage.getItem('matomoTrackingEnabled');
+    const CHECKBOXES = nodeArray(
+        BASE_SELECTOR + ' input[name="matomo-optout"]'
+    );
 
-		if (localStorage.getItem('matomoTrackingEnabled') === 'true') {
-			$(this).find('input[name="matomo-optout"]').prop('checked', true);
-			for (var langAct in langSnippets) {
-				$(this).find('label[for="matomo-optout-' + langAct + '"]').html(langSnippets[langAct].trackingActive);
-			}
-		}
-		if (localStorage.getItem('matomoTrackingEnabled') === 'false') {
-			$(this).find('input[name="matomo-optout"]').prop('checked', false);
-			for (var langInact in langSnippets) {
-				$(this).find('label[for="matomo-optout-' + langInact + '"]').html(langSnippets[langInact].trackingInActive);
-			}
-		}
-	});
+    const CHECKED =
+        TRACKING_VALUE === 'true'
+            ? true
+            : TRACKING_VALUE === 'false'
+            ? false
+            : null;
+    let textKey = CHECKED ? 'trackingActive' : 'trackingInActive';
+
+    if (CHECKED !== null) {
+        CHECKBOXES.forEach((checkbox) => {
+            checkbox.checked = CHECKED;
+        });
+        for (let language in LANG_SNIPPETS) {
+            const ELEMENTS = nodeArray(
+                `${BASE_SELECTOR} label[for="matomo-optout-${language}"]`
+            );
+            setHtml(ELEMENTS, language, textKey);
+        }
+    }
 }
 
 /**
  * change the status of the tracking
  * called on checkbox click
  */
-function matomoChangeStatus()
-{
-	if (typeof(Storage) !== 'undefined') {
-		localStorage.matomoTrackingEnabled = (localStorage.getItem('matomoTrackingEnabled') === 'true') ? 'false' : 'true';
-		matomoDisplayStatus();
-	}
+function matomoChangeStatus() {
+    if (typeof Storage !== 'undefined') {
+        localStorage.matomoTrackingEnabled =
+            localStorage.getItem('matomoTrackingEnabled') === 'true'
+                ? 'false'
+                : 'true';
+        matomoDisplayStatus();
+    }
 }
 
 /**
  * get the browser’s DoNotTrack setting
  */
-var dnt = (navigator.doNotTrack === "yes" || navigator.doNotTrack === "1" || navigator.msDoNotTrack === "1" || window.doNotTrack === "1") ? true : false;
+const DO_NOT_TRACK =
+    navigator.doNotTrack === 'yes' ||
+    navigator.doNotTrack === '1' ||
+    navigator.msDoNotTrack === '1' ||
+    window.doNotTrack === '1'
+        ? true
+        : false;
 
-if (dnt && doNotTrackRespected) {
-	/**
-	 * if browser DoNotTrack setting is activated show doNotTrackActive text
-	 */
-	for (var langDNT in langSnippets) {
-		$('.matomo-optout[lang="' + langDNT + '"]').html(langSnippets[langDNT].doNotTrackActive);
-	}
+if (DO_NOT_TRACK && DO_NOT_TRACK_RESPECTED) {
+    /**
+     * if browser DoNotTrack setting is activated show doNotTrackActive text
+     */
+    for (let language in LANG_SNIPPETS) {
+        const ELEMENTS = nodeArray(`${BASE_SELECTOR}[lang="${language}"]`);
+        setHtml(ELEMENTS, language, 'doNotTrackActive');
+    }
 } else {
-	if (typeof(Storage) !== 'undefined') {
-		/**
-		 * if localStorage exists show status text and set event listener to checkbox
-		 */
-		matomoDisplayStatus();
-		$('input[name="matomo-optout"]').on('change', function() {
-			matomoChangeStatus();
-		});
-	} else {
-		for (var langOldBrowser in langSnippets) {
-			$('.matomo-optout[lang="' + langOldBrowser + '"]').html(langSnippets[langOldBrowser].localStorageNotAvailable);
-		}
-	}
+    if (typeof Storage !== 'undefined') {
+        /**
+         * if localStorage exists show status text and set event listener to checkbox
+         */
+        matomoDisplayStatus();
+        nodeArray(`input[name="matomo-optout"]`).forEach((input) => {
+            input.addEventListener('change', matomoChangeStatus);
+        });
+    } else {
+        for (let language in LANG_SNIPPETS) {
+            const ELEMENTS = nodeArray(`${BASE_SELECTOR}[lang="${language}"]`);
+            setHtml(ELEMENTS, language, 'localStorageNotAvailable');
+        }
+    }
 }
