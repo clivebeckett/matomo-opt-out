@@ -50,13 +50,9 @@ const LANG_SNIPPETS = {
 /**
  * Return an array from nodes
  * @param selector
- * @param context
  */
-function nodeArray(selector, context) {
-    if (!context) {
-        context = document;
-    }
-    return [].slice.call(context.querySelectorAll(selector));
+function nodeArray(selector) {
+    return [].slice.call(document.querySelectorAll(selector));
 }
 
 function setHtml(elements, language, key) {
@@ -78,17 +74,15 @@ function matomoDisplayStatus() {
     const TRACKING_VALUE = localStorage.getItem('matomoTrackingEnabled');
     const CHECKBOXES = nodeArray(BASE_SELECTOR + ' input[name="matomo-optout"]');
 
-    const CHECKED = TRACKING_VALUE === 'true' ? true : TRACKING_VALUE === 'false' ? false : null;
+    const CHECKED = TRACKING_VALUE === 'true';
     const TEXT_KEY = CHECKED ? 'trackingActive' : 'trackingInActive';
 
-    if (CHECKED !== null) {
-        CHECKBOXES.forEach((checkbox) => {
-            checkbox.checked = CHECKED;
-        });
-        for (let language in LANG_SNIPPETS) {
-            const ELEMENTS = nodeArray(`${BASE_SELECTOR} label[for="matomo-optout-${language}"]`);
-            setHtml(ELEMENTS, language, TEXT_KEY);
-        }
+    CHECKBOXES.forEach((checkbox) => {
+        checkbox.checked = CHECKED;
+    });
+    for (let language in LANG_SNIPPETS) {
+        const ELEMENTS = nodeArray(`${BASE_SELECTOR} label[for="matomo-optout-${language}"]`);
+        setHtml(ELEMENTS, language, TEXT_KEY);
     }
 }
 
@@ -105,25 +99,27 @@ function matomoChangeStatus() {
 }
 
 /**
- * get the browser’s DoNotTrack setting
+ * Get the browser’s DoNotTrack setting
+ * @var DO_NOT_TRACK boolean
  */
-const DO_NOT_TRACK =
-    navigator.doNotTrack === 'yes' ||
-    navigator.doNotTrack === '1' ||
-    navigator.msDoNotTrack === '1' ||
-    window.doNotTrack === '1'
-        ? true
-        : false;
+const DO_NOT_TRACK = (() => {
+    const NAV = navigator;
+    return (
+        !!NAV.doNotTrack === 'yes' || NAV.doNotTrack === '1' || NAV.msDoNotTrack === '1' || window.doNotTrack === '1'
+    );
+})();
 
-if (DO_NOT_TRACK && DO_NOT_TRACK_RESPECTED) {
-    /**
-     * if browser DoNotTrack setting is activated show doNotTrackActive text
-     */
-    for (let language in LANG_SNIPPETS) {
-        const ELEMENTS = nodeArray(`${BASE_SELECTOR}[lang="${language}"]`);
-        setHtml(ELEMENTS, language, 'doNotTrackActive');
+(() => {
+    if (DO_NOT_TRACK && DO_NOT_TRACK_RESPECTED) {
+        /**
+         * if browser DoNotTrack setting is activated show doNotTrackActive text
+         */
+        for (let language in LANG_SNIPPETS) {
+            const ELEMENTS = nodeArray(`${BASE_SELECTOR}[lang="${language}"]`);
+            setHtml(ELEMENTS, language, 'doNotTrackActive');
+        }
+        return;
     }
-} else {
     if (typeof Storage !== 'undefined') {
         /**
          * if localStorage exists show status text and set event listener to checkbox
@@ -132,10 +128,10 @@ if (DO_NOT_TRACK && DO_NOT_TRACK_RESPECTED) {
         nodeArray(`input[name="matomo-optout"]`).forEach((input) => {
             input.addEventListener('change', matomoChangeStatus);
         });
-    } else {
-        for (let language in LANG_SNIPPETS) {
-            const ELEMENTS = nodeArray(`${BASE_SELECTOR}[lang="${language}"]`);
-            setHtml(ELEMENTS, language, 'localStorageNotAvailable');
-        }
+        return;
     }
-}
+    for (let language in LANG_SNIPPETS) {
+        const ELEMENTS = nodeArray(`${BASE_SELECTOR}[lang="${language}"]`);
+        setHtml(ELEMENTS, language, 'localStorageNotAvailable');
+    }
+})();
