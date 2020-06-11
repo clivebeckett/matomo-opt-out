@@ -11,9 +11,6 @@ Inspired by one line of code in the HTML of [tu-dresden.de](https://tu-dresden.d
 - check for browser’s *Do Not Track* setting
 - support for multiple languages in one page
 
-### Dependencies
-- jQuery 2.0+
-
 ### The HTML for the actual opt-out checkbox
 Add this to the page(s) where you want your visitors to find the opt-out checkbox – probably within the privacy statement.
 Change *en* (3×) for any language code you like, but take care of adding this language to the matomoTrackingOptOut.js (*en* and *de* are added by default). You can add this HTML to one single page multiple times in different languages if you wish.
